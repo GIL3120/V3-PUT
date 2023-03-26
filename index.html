@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投資戦略シミュレータ</title>
+    <style>
+        input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>投資戦略シミュレータ</h1>
+    <p>このシミュレータは、与えられた変数に基づいて、特定の投資戦略の利益を計算するためのものです。</p>
+    <form id="strategyForm">
+        <label for="L">L (自分の流動性):</label>
+        <input type="number" id="L" name="L">
+        <br>
+        <label for="P">P (現在のETH価格):</label>
+        <input type="number" id="P" name="P">
+        <br>
+        <label for="P_end">P_end (終了時のETH価格):</label>
+        <input type="number" id="P_end" name="P_end">
+        <br>
+        <label for="P_lower">P_lower (流動性範囲の下限):</label>
+        <input type="number" id="P_lower" name="P_lower">
+        <br>
+        <label for="P_upper">P_upper (流動性範囲の上限):</label>
+        <input type="number" id="P_upper" name="P_upper">
+        <br>
+        <label for="V_total">V_total (取引の総額):</label>
+        <input type="number" id="V_total" name="V_total">
+        <br>
+        <label for="L_total_range">L_total_range (該当範囲内の総流動性):</label>
+        <input type="number" id="L_total_range" name="L_total_range">
+        <br>
+        <label for="fee_rate">fee_rate (手数料率):</label>
+        <input type="number" id="fee_rate" name="fee_rate" step="0.01">
+        <br>
+        <label for="utilization_rate">utilization_rate (利用率):</label>
+        <input type="number" id="utilization_rate" name="utilization_rate" step="0.01">
+        <br>
+        <label for="x">x (ETH-USDC交換比率の変動率):</label>
+        <input type="number" id="x" name="x" step="0.01">
+        <br>
+        <label for="K">K (PUTオプションの行使価格):</label>
+        <input type="number" id="K" name="K">
+        <br>
+        <label for="C_put">C_put (PUTオプションの価格):</label>
+        <input type="number" id="C_put" name="C_put" step="0.01">
+        <br>
+           <label for="N">N (購入および行使するPUTオプションの数量):</label>
+    <input type="number" id="N" name="N">
+    <br>
+    <button type="button" onclick="calculate()">計算</button>
+</form>
+<div id="results"></div>
+
+<script>
+    function calculate() {
+        const L = parseFloat(document.getElementById("L").value);
+        const P = parseFloat(document.getElementById("P").value);
+        const P_end = parseFloat(document.getElementById("P_end").value);
+        const P_lower = parseFloat(document.getElementById("P_lower").value);
+        const P_upper = parseFloat(document.getElementById("P_upper").value);
+        const V_total = parseFloat(document.getElementById("V_total").value);
+        const L_total_range = parseFloat(document.getElementById("L_total_range").value);
+        const fee_rate = parseFloat(document.getElementById("fee_rate").value);
+        const utilization_rate = parseFloat(document.getElementById("utilization_rate").value);
+        const x = parseFloat(document.getElementById("x").value);
+        const K = parseFloat(document.getElementById("K").value);
+        const C_put = parseFloat(document.getElementById("C_put").value);
+        const N = parseFloat(document.getElementById("N").value);
+
+        const R1_fee = V_total * fee_rate * (L / L_total_range);
+        const R2 = Math.max(0, K - P_end) * N;
+        const R_total = R1_fee + R2 - C_put * N;
+
+        const resultsElement = document.getElementById("results");
+        resultsElement.innerHTML = `
+            <p>手数料収入（R1_fee）: ${R1_fee.toFixed(2)} USDC</p>
+            <p>PUTオプションによる利益（R2）: ${R2.toFixed(2)} USDC</p>
+            <p>総利益（R_total）: ${R_total.toFixed(2)} USDC</p>
+        `;
+    }
+</script>
+</body>
+</html>>
